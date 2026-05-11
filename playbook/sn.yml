@@ -1,0 +1,25 @@
+---
+- name: Get system name and serial number
+  hosts: servers
+  become: true
+
+  tasks:
+
+    - name: Gather system facts
+      setup:
+
+    - name: Show hostname
+      debug:
+        msg: "Hostname: {{ ansible_hostname }}"
+
+    - name: Show system vendor
+      debug:
+        msg: "Vendor: {{ ansible_system_vendor }}"
+
+    - name: Show product name
+      debug:
+        msg: "Product: {{ ansible_product_name }}"
+
+    - name: Show serial number
+      debug:
+        msg: "Serial Number: {{ ansible_product_serial }}"

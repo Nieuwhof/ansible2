@@ -1,0 +1,65 @@
+---
+- name: Collect system information
+  hosts: servers
+  become: true
+
+  tasks:
+
+    - name: Gather system facts
+      setup:
+
+    - name: Show hostname
+      debug:
+        msg: "Hostname: {{ ansible_hostname }}"
+
+    - name: Show OS
+      debug:
+        msg: "OS: {{ ansible_distribution }} {{ ansible_distribution_version }}"
+
+    - name: Show kernel version
+      debug:
+        msg: "Kernel: {{ ansible_kernel }}"
+
+    - name: Show CPU info
+      debug:
+        msg: "CPU: {{ ansible_processor }}"
+
+    - name: Show total memory
+      debug:
+        msg: "Memory: {{ ansible_memtotal_mb }} MB"
+
+    - name: Show IP address
+      debug:
+        msg: "IP: {{ ansible_default_ipv4.address }}"
+
+    - name: Show disk devices
+      debug:
+        var: ansible_devices
+
+    - name: Show mounted disks
+      debug:
+        var: ansible_mounts
+
+    - name: Show uptime
+      shell: uptime
+      register: uptime_output
+
+    - name: Print uptime
+      debug:
+        var: uptime_output.stdout
+
+    - name: Show logged in users
+      shell: who
+      register: users_output
+
+    - name: Print logged in users
+      debug:
+        var: users_output.stdout
+
+    - name: Show installed package manager version
+      shell: apt --version
+      register: apt_version
+
+    - name: Print apt version
+      debug:
+        var: apt_version.stdout
