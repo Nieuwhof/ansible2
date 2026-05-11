@@ -1,0 +1,70 @@
+---
+# ============================================================
+# Playbook : create_user.yml
+# Purpose  : Create a user, set password, grant sudo, and
+#            authorize a laptop SSH public key.
+# Usage    : ansible-playbook create_user.yml -i inventory.ini \
+#              --extra-vars "target_host=myserver"
+# ============================================================
+
+- name: Create user with sudo and SSH access
+  hosts: shaun
+  become: true
+
+  vars:
+    # ── Change these ──────────────────────────────────────────
+    new_username: "ops"                        # username to create
+    new_password: "ops"                        # plain-text password (will be hashed)
+    laptop_public_key: |                       # paste your public key here
+     ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMP/vBxc3yPyby6efXsPRzvV4avfyoR5K7yWDsnAln9B ops@ops-Latitude-7420
+    # ─────────────────────────────────────────────────────────
+
+  tasks:
+
+    # 1. Create the user account
+    - name: Create user {{ new_username }}
+      ansible.builtin.user:
+        name: "{{ new_username }}"
+        password: "{{ new_password | password_hash('sha512') }}"
+        shell: /bin/bash
+        create_home: true
+        state: present
+
+    # 2. Grant passwordless sudo
+    - name: Add {{ new_username }} to sudoers (NOPASSWD)
+      ansible.builtin.copy:
+        dest: "/etc/sudoers.d/{{ new_username }}"
+        content: "{{ new_username }} ALL=(ALL) NOPASSWD:ALL\n"
+        mode: "0440"
+        validate: "visudo -cf %s"
+
+    # 3. Ensure .ssh directory exists with correct permissions
+    - name: Create .ssh directory for {{ new_username }}
+      ansible.builtin.file:
+        path: "/home/{{ new_username }}/.ssh"
+        state: directory
+        owner: "{{ new_username }}"
+        group: "{{ new_username }}"
+        mode: "0700"
+
+    # 4. Authorize laptop public key
+    - name: Add laptop public key to authorized_keys
+      ansible.builtin.authorized_key:
+        user: "{{ new_username }}"
+        state: present
+        key: "{{ laptop_public_key }}"
+
+    # 5. (Optional but recommended) Harden SSH – disable password auth
+    - name: Disable SSH password authentication
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^#?PasswordAuthentication"
+        line: "PasswordAuthentication no"
+        state: present
+      notify: Restart sshd
+
+  handlers:
+    - name: Restart sshd
+      ansible.builtin.service:
+        name: "{{ 'ssh' if ansible_os_family == 'Debian' else 'sshd' }}"
+        state: restarted

@@ -1,0 +1,2 @@
+ansible-playbook -i inventory/host.ini playbook/update.yml 
+ansible-playbook playbook/update.yml 
