@@ -1,0 +1,20 @@
+---
+all:
+  hosts:
+    wallace:
+      set_hostname: wallace.andme.site
+      ansible_host: 143.110.183.201
+      ansible_user: root
+      #ansible_port: 8080
+    gromit:
+      set_hostname: gromit.andme.site
+      ansible_host: 143.110.183.201
+      ansible_user: root    
+    shaun:
+      set_hostname: shaun.andme.site
+      ansible_host: 134.209.158.229
+      ansible_user: root
+
+  vars:
+      set_pass: Bruinbus!!
+      set_fqdn: andme.site
