@@ -1,0 +1,10 @@
+---
+- hosts: shaun,wallace
+  become: true
+  become_user: root
+  roles:
+     - updateos
+     
+
+
+
