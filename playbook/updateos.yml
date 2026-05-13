@@ -1,5 +1,5 @@
 ---
-- hosts: shaun,wallace
+- hosts: bertustest
   become: true
   become_user: root
   roles:
