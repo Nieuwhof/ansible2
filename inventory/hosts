@@ -18,6 +18,8 @@ all:
       set_hostname: bertustest
       ansible_host: 192.168.0.126
       ansible_user: ops
+      ansible_become_password: ops
+      ansible_become: yes
   vars:
-      set_pass: Bruinbus!!
-      set_fqdn: andme.site
+  #    set_pass: 
+  #    set_fqdn: andme.site

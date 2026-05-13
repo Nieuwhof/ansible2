@@ -1,7 +1,6 @@
 ---
 - hosts: bertustest
-  become: true
-  become_user: root
+  become: yes
   roles:
      - updateos
      
