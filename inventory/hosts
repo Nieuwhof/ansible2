@@ -14,7 +14,10 @@ all:
       set_hostname: shaun.andme.site
       ansible_host: 134.209.158.229
       ansible_user: root
-
+    bertustest:
+      set_hostname: bertustest
+      ansible_host: 192.168.0.126
+      ansible_user: ops
   vars:
       set_pass: Bruinbus!!
       set_fqdn: andme.site
